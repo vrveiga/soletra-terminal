@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-#define MAX_WORDS 1000
-#define MAX_WORD_SIZE 10
+#define MAX_WORDS 500
+#define MAX_WORD_SIZE 30
 
 typedef struct {
     char list[5][MAX_WORDS][MAX_WORD_SIZE];
@@ -34,36 +34,26 @@ void inicio(WordList* wordlist) {
     }
 
     char s[MAX_WORD_SIZE];
-    while (fscanf(file, "%s", s) != EOF) {
-        for (int i = 0; i < 30; i++) printf("%d %d\n", i, valid_let[i]);
+    while (fscanf(file, " %s", s) != EOF) {
 
         int sz = strlen(s);
         bool ok = true, has_first = false;
-        printf("%s\n", s);
 
         for (int i = 0; i < sz; i++) {
-            printf("%c ", s[i]);
-            printf("%d\n", s[i] - 'A');
-
             if (valid_let[s[i] - 'A'] == false) {
-                printf("NAO E BOM\n");
                 ok = false;
                 break;
             }
 
             if (s[i] == first_let) {
-                printf("E PRIMEIRA LETRA\n");
                 has_first = true;
             }
         }
 
         if (ok && has_first) {
-            printf("%s\n", s);
-            strcpy(s, wordlist->list[sz-4][wordlist->size[sz-4]]);
+            strcpy(wordlist->list[sz-4][wordlist->size[sz-4]], s);
             wordlist->size[sz-4]++;
         }
-
-        for (int i = 0; i < 30; i++) printf("%d %d\n", i, valid_let[i]);
     }
 
     fclose(file);
@@ -76,15 +66,51 @@ void solucao(WordList* wordlist) {
     for (int i = 0; i < wordlist->size[0]; i++) {
         if (i == wordlist->size[0] - 1) {
             printf("%s\n", wordlist->list[0][i]);
+            break;
         }
         printf("%s, ", wordlist->list[0][i]);
     }
+
+    printf("(5 letras) ");
+    for (int i = 0; i < wordlist->size[1]; i++) {
+        if (i == wordlist->size[1] - 1) {
+            printf("%s\n", wordlist->list[1][i]);
+            break;
+        }
+        printf("%s, ", wordlist->list[1][i]);
+    }
+
+    printf("(6 letras) ");
+    for (int i = 0; i < wordlist->size[2]; i++) {
+        if (i == wordlist->size[2] - 1) {
+            printf("%s\n", wordlist->list[2][i]);
+            break;
+        }
+        printf("%s, ", wordlist->list[2][i]);
+    }
+
+    printf("(7 letras) ");
+    for (int i = 0; i < wordlist->size[3]; i++) {
+        if (i == wordlist->size[3] - 1) {
+            printf("%s\n", wordlist->list[3][i]);
+            break;
+        }
+        printf("%s, ", wordlist->list[3][i]);
+    }
+
+    printf("(8 letras) ");
+    for (int i = 0; i < wordlist->size[4]; i++) {
+        if (i == wordlist->size[4] - 1) {
+            printf("%s\n", wordlist->list[4][i]);
+            break;
+        }
+        printf("%s, ", wordlist->list[4][i]);
+    }
+
+    printf("fim!\n");
 }
 
 int main() {
-    char op[15];
-    scanf("%s", op);
-
     WordList* wordlist = malloc(sizeof(WordList));
     if (wordlist == NULL) {
         printf("ERRO!\n");
@@ -96,17 +122,17 @@ int main() {
         wordlist->found[i] = 0;
     }
 
-    printf("antes\n");
+    char op[15];
+    while(scanf(" %s", op) != EOF) {
+        if (!strcmp(op, "inicio")) {
+            inicio(wordlist);
+        } else if (!strcmp(op, "palavra")) {
 
-    if (!strcmp(op, "inicio")) {
-        inicio(wordlist);
-        printf("depois\n");
-    } else if (!strcmp(op, "palavra")) {
-
-    } else if (!strcmp(op, "progresso")) {
-        
-    } else if (!strcmp(op, "solucao")) {
-        solucao(wordlist);
+        } else if (!strcmp(op, "progresso")) {
+            
+        } else if (!strcmp(op, "solucao")) {
+            solucao(wordlist);
+        }
     }
 
     return 0;
