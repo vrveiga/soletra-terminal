@@ -7,9 +7,9 @@
 #define MAX_WORD_SIZE 30
 
 typedef struct {
-    char list[5][MAX_WORDS][MAX_WORD_SIZE];
-    int size[5];
-    int found[5];
+    char list[MAX_WORD_SIZE][MAX_WORDS][MAX_WORD_SIZE];
+    int size[MAX_WORD_SIZE];
+    int found[MAX_WORD_SIZE];
 } WordList;
 
 void inicio(WordList* wordlist) {
@@ -59,52 +59,23 @@ void inicio(WordList* wordlist) {
     fclose(file);
 }
 
+void printa_linha(WordList* wordlist, int word_size) {
+    printf("(%d letras) ", word_size);
+    for (int i = 0; i < wordlist->size[word_size - 4]; i++) {
+        if (i == wordlist->size[word_size - 4] - 1) {
+            printf("%s\n", wordlist->list[word_size - 4][i]);
+            break;
+        }
+        printf("%s, ", wordlist->list[word_size - 4][i]);
+    }
+} 
+
 void solucao(WordList* wordlist) {
     printf("para encerrar o jogo estavam faltando as palavras:\n");
     
-    printf("(4 letras) ");
-    for (int i = 0; i < wordlist->size[0]; i++) {
-        if (i == wordlist->size[0] - 1) {
-            printf("%s\n", wordlist->list[0][i]);
-            break;
-        }
-        printf("%s, ", wordlist->list[0][i]);
-    }
-
-    printf("(5 letras) ");
-    for (int i = 0; i < wordlist->size[1]; i++) {
-        if (i == wordlist->size[1] - 1) {
-            printf("%s\n", wordlist->list[1][i]);
-            break;
-        }
-        printf("%s, ", wordlist->list[1][i]);
-    }
-
-    printf("(6 letras) ");
-    for (int i = 0; i < wordlist->size[2]; i++) {
-        if (i == wordlist->size[2] - 1) {
-            printf("%s\n", wordlist->list[2][i]);
-            break;
-        }
-        printf("%s, ", wordlist->list[2][i]);
-    }
-
-    printf("(7 letras) ");
-    for (int i = 0; i < wordlist->size[3]; i++) {
-        if (i == wordlist->size[3] - 1) {
-            printf("%s\n", wordlist->list[3][i]);
-            break;
-        }
-        printf("%s, ", wordlist->list[3][i]);
-    }
-
-    printf("(8 letras) ");
-    for (int i = 0; i < wordlist->size[4]; i++) {
-        if (i == wordlist->size[4] - 1) {
-            printf("%s\n", wordlist->list[4][i]);
-            break;
-        }
-        printf("%s, ", wordlist->list[4][i]);
+    for (int i = 0; i < MAX_WORD_SIZE; i++) {
+        if (wordlist->size[i] == 0) continue;
+        printa_linha(wordlist, i + 4);
     }
 
     printf("fim!\n");
@@ -117,7 +88,7 @@ int main() {
         exit(1);
     }
 
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < MAX_WORD_SIZE; i++) {
         wordlist->size[i] = 0;
         wordlist->found[i] = 0;
     }
