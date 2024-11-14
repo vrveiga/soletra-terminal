@@ -6,26 +6,35 @@
 #define MAX_WORDS 500
 #define MAX_WORD_SIZE 30
 
-typedef struct {
-    char list[MAX_WORD_SIZE][MAX_WORDS][MAX_WORD_SIZE];
-    int size[MAX_WORD_SIZE];
+typedef struct { //estrutura que contem informacoes sobre o jogo
+    char list[MAX_WORD_SIZE/*-4?*/][MAX_WORDS][MAX_WORD_SIZE]; //sla porra
+    /*guarda em cada indice a quantidade de palavras com tal tamanho
+    como o numero minimo de palavras é 4, o indice 0 corresponde a 4 letras e assim por diante*/
+    int size[MAX_WORD_SIZE]; 
     int found[MAX_WORD_SIZE];
-    int falta;
+    int falta; //quantidade de palavras validas
 } WordList;
 
+
+/*
+Guarda as informações da struct WordList que serão utilizadas na execução do jogo
+através da verificação das palavras no arquivo valid_words.txt
+Parâmetros: 
+    *wordlist - estrutura que contem informacoes sobre o jogo
+*/
 void inicio(WordList* wordlist) {
-    bool valid_let[30] = {};
-    char first_let;
+    bool valid_let[30] = {}; //tabela hash de letras validas ou não
+    char first_let; 
 
     for (int i = 0; i < 7; i++) {
         char c;
         scanf(" %c", &c);
 
-        if (i == 0) {
-            first_let = c;
+        if (i == 0) { //guarda primeira letra
+            first_let = c; 
         }
 
-        valid_let[c - 'A'] = true; 
+        valid_let[c - 'A'] = true; //marca as letras validas para '1'
     }
 
     FILE *file = fopen("valid_words.txt", "r");
@@ -35,26 +44,30 @@ void inicio(WordList* wordlist) {
     }
 
     char s[MAX_WORD_SIZE];
-    while (fscanf(file, " %s", s) != EOF) {
+    //O loop a seguir verifica todas as palavras validas possiveis e as guarda na estrutura list
+    while (fscanf(file, " %s", s) != EOF) { //faz a leitura de cada palavra do arquivo
 
-        int sz = strlen(s);
-        bool ok = true, has_first = false;
+        int sz = strlen(s); //tamanho da palavra
+        bool ok = true; //
+        bool has_first = false;
 
         for (int i = 0; i < sz; i++) {
-            if (valid_let[s[i] - 'A'] == false) {
-                ok = false;
+            if (valid_let[s[i] - 'A'] == false) { //verifica se as letras da palavras sao todas validas
+                ok = false; //guarda a informação da palavra não ser valida
                 break;
             }
 
-            if (s[i] == first_let) {
-                has_first = true;
+            if (s[i] == first_let) { //verifica se a palavra tem a letra obrigatoria
+                has_first = true; 
             }
         }
 
-        if (ok && has_first) {
+        if (ok && has_first) { //se a palavra for valida
+            //guarda a palavra na estrutura list
+            //entendi não man
             strcpy(wordlist->list[sz-4][wordlist->size[sz-4]], s);
-            wordlist->size[sz-4]++;
-            wordlist->falta++;
+            wordlist->size[sz-4]++; //guarda na lista a informacao sobre a quantidade de palavras com certo tamanho
+            wordlist->falta++; //quantidade de palavras validas
         }
     }
 
@@ -139,19 +152,23 @@ void solucao(WordList* wordlist) {
 }
 
 int main() {
+    //aloca struct wordlist
     WordList* wordlist = malloc(sizeof(WordList));
     if (wordlist == NULL) {
         printf("ERRO!\n");
         exit(1);
     }
 
+    //define informacoes iniciais da struct 
     for (int i = 0; i < MAX_WORD_SIZE; i++) {
         wordlist->size[i] = 0;
         wordlist->found[i] = 0;
     }
     wordlist->falta = 0;
 
-    char op[15];
+    
+    char op[15]; //string da operacao 
+    //loop que executa alguma funcao do programa de acordo com a instrucao fornecida
     while(scanf(" %s", op) != EOF) {
         if (!strcmp(op, "inicio")) {
             inicio(wordlist);
@@ -163,6 +180,7 @@ int main() {
             solucao(wordlist);
         }
     }
+
 
     free(wordlist);
 
