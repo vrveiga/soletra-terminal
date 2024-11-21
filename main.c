@@ -8,10 +8,10 @@
 
 typedef struct { //estrutura que contem informacoes sobre o jogo
     /*matriz de strings que contem as palavras validas, as linhas representam o tamanho da palavra 
-    e as colunas servem para armazenar mais de uma string por linha*/
+    e as colunas servem para armazenar as strings de mesmo tamanho em ordem alfabetica*/
     char list[MAX_WORD_SIZE][MAX_WORDS][MAX_WORD_SIZE]; 
     /*guarda em cada indice a quantidade de palavras com tal tamanho
-    como o numero minimo de palavras é 4, o indice 0 corresponde a 4 letras e assim por diante*/
+    como o numero minimo de letras é 4, o indice 0 corresponde a 4 letras e assim por diante*/
     int size[MAX_WORD_SIZE]; 
     /*guarda em cada indice a quantidade de palavras com tal tamanho JA ENCONTRRADAS
     como o numero minimo de palavras é 4, o indice 0 corresponde a 4 letras e assim por diante*/
