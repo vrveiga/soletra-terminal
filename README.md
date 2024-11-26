@@ -1,39 +1,43 @@
 # Sobre
 O trabalho desenvolvido foi realizado para a disciplina de Introdução à Ciência de Computação II (SCC0201) ministrada pelo docente Diego Raphael Amancio.
 
+# Decisões de projeto
+A resolução do problema proposto foi desenvolvida a partir da busca das palavras validas no arquivo valid_words.txt e da organização dessas palavras verificadas como pertencentes a solução, bem como informações sobre elas em uma estrutura de dados chamada WordList. A organização inicial dos dados na estrutura facilita o acesso às palavras válidas sem ocupar espaço significativo na memória, possibilitando um código mais eficiente e conciso.
 
-# Decisoes de projeto
-A resolução do problema proposto foi desenvolvida a partir da busca das palavras validas no arquivo valid_words.txt e da organização dessas palavras verificadas como validas bem como informações sobre elas em um estrura de dados chamada WordList, além disso na operação de verificação de uma entrada válida utilizamos busca binaria para otimização.
-A organização inicial dos dados na estrutura facilita o acesso as palavras válidas sem ocupar espaço significativo na memória possibilitando um código mais eficiente e conciso.
-<!-- Optamos por percorrer o arquivo apenas uma vez e já delimitar as palavras válidas mesmo que a operação tenha custo O(n), dado que se fossemos realizar uma busca binária no arquivo em toda verificação se uma palavra é valida a troca de informacao entre o SSD/HD e a memoria RAM ao carregar os buffers poderiam deixar o programa lento, mesmo que a complexidade assintótica seja O(logn) para cada operação. Além disso, a memória utilizada para armazenar as palavras válidas é baixa e ao armazenar outras informacoes como. deixa pra lá 
- -->
+Ademais, durante o programa, a verificação de validade de uma entrada é feita utilizando o algoritmo de **busca binária**, otimizando o tempo de busca para **O(log⁡n)** em comparação a uma abordagem de busca linear que seria **O(n)**.
+
 ## Wordlist
-Para otimizar a memória todos os campos que contém informações sobre o tamanho das palavras foram decrecidas 4 unidades, isso porque a menor quantidade de letras em uma palavra é 4, portanto uma palavra de 4 letras tem tamanho 0, uma de 5 letras tem tamanho 1 e assim por diante.  
+Para otimizar a memória, os campos relacionados ao tamanho das palavras são ajustados com base em um deslocamento de 4 unidades, pois o menor tamanho de palavra é 4. Dessa forma, palavras de 4 letras têm tamanho representado por 0, palavras de 5 letras por 1, e assim por diante.  
 A estrutura possui quatro campos e são eles respectivamente:
 
 ### char list[MAX_WORD_SIZE][MAX_WORDS][MAX_WORD_SIZE] 
-A estrutura pode ser interpretada como uma matriz de strings que contem as palavras validas, as linhas agrupam a palavras por tamanho e as colunas servem para armazenar as strings de cada tamanho em ordem alfabética. 
+A estrutura pode ser interpretada como uma matriz de strings que contem as palavras validas contidas na solução, as linhas agrupam a palavras por tamanho e as colunas servem para armazenar as strings de cada tamanho em ordem alfabética, de forma a possibilitar a realização do algoritmo de busca binária fixada alguma linha. Essa organização permite acessar rapidamente palavras de um tamanho específico e realizar busca binária, otimizando a eficiência temporal.
 
 ### int size[MAX_WORD_SIZE] 
-A estrutura é uma lista que guarda em cada indice a quantidade de palavras com tal tamanho, como mencionado anteriomente já que o numero minimo de letras é 4, o indice 0 corresponde a palavras de 4 letras e assim por diante. Podemos interpretar a lista como uma tabela hash perfeita em que a função usa do tamanho da palavra para armazenar uma informação.
+A estrutura é uma lista que guarda em cada índice (ajustado) a quantidade de palavras contidas na solução com tal tamanho (4 letras correspondem ao índice 0 e assim por diante). Podemos interpretar a lista como uma tabela hash perfeita em que a função usa o tamanho da palavra para armazenar uma informação, permitindo o acesso indexado à quantidade de palavras de cada tamanho, visto que será uma informação importante para várias funções do programa.
 
 ### int found[MAX_WORD_SIZE]
-A estrutura é uma lista que guarda em cada indice a quantidade de palavras com tal tamanho **ja encontradas pelo usuario** e segue a mesma lógica da estrutura anterior.
+A estrutura é uma lista que guarda em cada índice a quantidade de palavras com tal tamanho **já encontradas pelo usuário** e segue a mesma lógica de índices ajustados da estrutura anterior, simplificando o acesso a essas informações de maneira otimizada.
 
 ### int falta 
-A variável armazena a quantidade de palavras validas ainda não encontradas pelo usuário.
+Variável que armazena a quantidade de palavras validas contidas na solução que ainda não foram encontradas pelo usuário, permitindo determinar quando todas as soluções foram identificadas.
+
+# Busca Binária
+O algoritmo foi implementado na função "busca_binaria" e opera em alguma linha (determinada pelo tamanho da palavra) da estrutura "list", uma vez fixada a linha, o algoritmo irá buscar nas colunas a palavra fornecida pelo usuário. Podemos abstrair a estrutura utilizada como um vetor de strings organizadas em ordem alfabética. Como não estamos lidando com números, a função "strcmp" da biblioteca "strings.h" é utilizada para comparar palavras de forma lexicográfica e, através do retorno da função, é possível determinar se a busca deve continuar na metade superior ou inferior do vetor. 
+
+Essa abordagem reduz o tempo de busca para **O(log⁡n)**, sendo eficiente mesmo para grandes conjuntos de palavras.
 
 # Implementação
-A resolução do problema foi realizada utilizando 4 funções principais além da main, cada uma delas contém as operações realizadas de acordo com os comandos de entrada e são executadas através de um switch case, são elas:
+Além da função de busca binária, a resolução do problema foi realizada utilizando 4 funções principais, além da main, para executar as operações conforme os comandos de entrada:
 
 ## inicio
-Guarda as informações na struct WordList que serão utilizadas na execução do jogo através da busca das palavras validas no arquivo valid_words.txt baseando na entrada do usuario (letras fornecidas).
+Guarda as informações na struct WordList que serão utilizadas na execução do jogo através da leitura das palavras validas no arquivo valid_words.txt, utiliza a entrada do usuário (letras fornecidas) para filtrar as palavras pertencentes a solução e agrupá-las por tamanho.
 
 ## palavra
-Realiza a verificação da validez da palavra inserida pelo usuario, caso seja valida, as informacoes na struct wordlist são atualizadas. A busca é feita inicialmente delimitando a linha na matriz "list" em que a palavra se encontra através de seu tamanho e realizando uma busca binária através da função **"busca_binaria"** (para otimizacao do algoritmo) nas colunas com a linha fixada.  
+Realiza a verificação da validez da palavra inserida pelo usuário, a validação ocorre utilizando a busca binária através da função **"busca_binaria"**, que é aplicada em uma linha específica da matriz "list" com base no tamanho da palavra, otimizando o tempo de busca em comparação com abordagens lineares.
 
 ## progresso
-Imprime o progresso do usuario até o momento de acordo com as especificações do projeto. A estrutura "list" (em WordList) ajuda a agrupar as palavras em tamanho para a impressão, e o vetor "size" (em WordList) ajuda a pular tamanhos que não tenham palavras. 
+Imprime o progresso do usuário até o momento de acordo com as especificações do projeto. A estrutura "list" ajuda a organizar as palavras por tamanho, e o vetor "size" ajuda a pular tamanhos sem palavras. 
 
 ## solucao
-Imprime a solução de acordo com as especificações do projeto. A estrutura "list" (em WordList) ajuda a agrupar as palavras em tamanho para a impressão, e o vetor "size" (em WordList) ajuda a pular tamanhos que não tenham palavras. A função **"printa_linha"** é usada para imprimir cada grupo de palavras com certo tamanho de acordo com as especificações do projeto.
+Imprime a solução de acordo com as especificações do projeto. A estrutura "list" ajuda a organizar as palavras por tamanho, e o vetor "size" ajuda a pular tamanhos sem palavras. A função **"printa_linha"** é usada para imprimir cada grupo de palavras com tamanho idêntico de acordo com as especificações do projeto.
